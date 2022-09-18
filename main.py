@@ -35,13 +35,13 @@ client = Client("AC337e1f870f1ce671c5a17f77cdec2f94", "4b028e7d594418d5e74192918
 # this function will run every 4 hours (the arduino code is timing this)
 def send_watering_msg(moisture):
 
-    text = "Your plant needs watering: the soil is "
+    text = "Your plant needs watering: the moisture level is " + str(moisture) + "%, and the soil is "
 
     # display the appropriate message based on soil moisture
     # note: moisture levels for each need to be changed at the end to reflect sensor data
-    if moisture == 1:
+    if moisture > 50:
         text += "mildly dry."
-    elif moisture == 2:
+    elif moisture > 25:
         text += "moderately dry."
     else:
         text += "very dry."
