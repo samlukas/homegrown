@@ -2,23 +2,20 @@
 
 from twilio.rest import Client
 import json
-import io
-#import configparser
-#configparser.Config
-
+import configparser
 # set up serial port reader to interpret arduino data
 import serial.tools.list_ports
 
-'''
+config = configparser.ConfigParser()
+config.read('config.ini')
+
 ports = serial.tools.list_ports.comports()
 print(ports)
 serialInst = serial.Serial()
 serialInst.baudrate = 9600
-serialInst.port = ""
-'''
+serialInst.port = config['DEFAULT']['plants']
 
-#if serialInst.port != "":
-    # serialInst.open()
+serialInst.open()
 # packet = serialInst.readLine()
 file = open('garden_info.json', 'rb', buffering = 0)
 # str_data = file.decode(encoding='utf8', errors='str')
