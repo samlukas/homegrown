@@ -14,6 +14,7 @@ RH_RF95 rf95(RFM95_CS, RFM95_INT);
 DHT dht(DHTPIN, DHTTYPE);
 
 #define LIGHT A0
+#define GROW 12
 
 void setup() {
   // put your setup code here, to run once:
@@ -26,6 +27,8 @@ void setup() {
   dht.begin();
 
   pinMode(LIGHT, INPUT);
+  pinMode(GROW, OUTPUT);
+  digitalWrite(GROW, LOW);
 }
 
 void loop() {
@@ -46,6 +49,12 @@ void loop() {
       Serial.println((char*)buf);
 
       int light = analogRead(LIGHT);
+      if (light > 400) {
+        digitalWrite(GROW, HIGH);
+      }
+      else {
+        digitalWrite(GROW, LOW);
+      }
     
       JSONVar dataObj;
       dataObj["ham"] = "K3CL/VE3";
