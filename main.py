@@ -16,11 +16,12 @@ serialInst.baudrate = 9600
 serialInst.port = config['DEFAULT']['plants']
 
 serialInst.open()
-# packet = serialInst.readLine()
-file = open('garden_info.json', 'rb', buffering = 0)
-# str_data = file.decode(encoding='utf8', errors='str')
-data_dictionary = json.loads(file.read())
-print(data_dictionary["moisture"])
+serialInst.write(b'test\n')
+packet = serialInst.readline()
+# file = open('garden_info.json', 'rb', buffering = 0)
+str_data = packet.decode(encoding='utf8', errors='str')
+data_dictionary = json.loads(str_data)
+print(data_dictionary["light"])
 
     # the following line needs your Twilio Account SID and Auth Token
 client = Client("AC337e1f870f1ce671c5a17f77cdec2f94", "4b028e7d594418d5e74192918398281f")
