@@ -9,19 +9,22 @@ import serial.tools.list_ports
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-ports = serial.tools.list_ports.comports()
-print(ports)
+#ports = serial.tools.list_ports.comports()
+#print(ports)
 serialInst = serial.Serial()
 serialInst.baudrate = 9600
 serialInst.port = config['DEFAULT']['plants']
 
-serialInst.open()
-serialInst.write(b'test\n')
-packet = serialInst.readline()
-# file = open('garden_info.json', 'rb', buffering = 0)
-str_data = packet.decode(encoding='utf8', errors='str')
-data_dictionary = json.loads(str_data)
-print(data_dictionary["light"])
+def poll(s):
+    s.open()
+    s.write(b'poll\n')
+    packet = s.readline()
+    s.close()
+    str_data = packet.decode()
+    print(str_data)
+    return json.loads(str_data)
+
+data = poll(serialInst)
 
     # the following line needs your Twilio Account SID and Auth Token
 client = Client("AC337e1f870f1ce671c5a17f77cdec2f94", "4b028e7d594418d5e74192918398281f")
