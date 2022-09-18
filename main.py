@@ -6,6 +6,42 @@ import configparser
 # set up serial port reader to interpret arduino data
 import serial.tools.list_ports
 
+# change the "from_" number to your Twilio number and the "to" number
+# to the phone number you signed up for Twilio with, or upgrade your
+# account to send SMS to any phone number
+
+# this function will run every 4 hours (the arduino code is timing this)
+
+    # the following line needs your Twilio Account SID and Auth Token
+client = Client("AC337e1f870f1ce671c5a17f77cdec2f94", "4b028e7d594418d5e74192918398281f")
+def send_msg(moisture, light, temperature):
+
+    text = "homegrown: " + "The temperature is " + str(int(temperature)) + " degrees celcius, the light level is "
+
+    # display the appropriate message based on soil moisture
+    # note: moisture levels for each need to be changed at the end to reflect sensor data
+    if light > 500:
+        text += "low, "
+    elif light > 250:
+        text += "medium, "
+    else:
+        text += "high, "
+
+    text += "and the soil is "
+
+    if moisture > 50:
+        text += "mildly dry."
+    elif moisture > 25:
+        text += "moderately dry."
+    else:
+        text += "very dry."
+
+    print(text)
+    client.messages.create(to="+16047720899",
+                           from_="+19014459525",
+                           body=text)
+
+
 config = configparser.ConfigParser()
 config.read('config.ini')
 
@@ -21,30 +57,6 @@ packet = serialInst.readline()
 # file = open('garden_info.json', 'rb', buffering = 0)
 str_data = packet.decode(encoding='utf8', errors='str')
 data_dictionary = json.loads(str_data)
-print(data_dictionary["light"])
-
-    # the following line needs your Twilio Account SID and Auth Token
-client = Client("AC337e1f870f1ce671c5a17f77cdec2f94", "4b028e7d594418d5e74192918398281f")
-
-# change the "from_" number to your Twilio number and the "to" number
-# to the phone number you signed up for Twilio with, or upgrade your
-# account to send SMS to any phone number
-
-# this function will run every 4 hours (the arduino code is timing this)
-def send_watering_msg(moisture):
-
-    text = "Your plant needs watering: the moisture level is " + str(moisture) + "%, and the soil is "
-
-    # display the appropriate message based on soil moisture
-    # note: moisture levels for each need to be changed at the end to reflect sensor data
-    if moisture > 50:
-        text += "mildly dry."
-    elif moisture > 25:
-        text += "moderately dry."
-    else:
-        text += "very dry."
-
-    client.messages.create(to="+16047720899",
-                           from_="+19014459525",
-                           body=text)
+print('hi')
+send_msg(data_dictionary["humidity"], data_dictionary["light"], data_dictionary["temperature"])
 
