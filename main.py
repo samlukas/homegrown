@@ -1,6 +1,11 @@
 # we import the Twilio client from the dependency we just installed
 
 from twilio.rest import Client
+import configparser
+import json
+
+config = configparser.ConfigParser()
+config.read('test.ini')
 
 # set up serial port reader to interpret arduino data
 import serial.tools.list_ports
@@ -10,16 +15,14 @@ print(ports)
 serialInst = serial.Serial()
 
 serialInst.baudrate = 9600
-serialInst.port = "COM1"
-serialInst.open()
+serialInst.port = config['DEFAULT']['plants']
 
-while True:
-    if serialInst.in_waiting:
-        packet = serialInst.readLine()
-        print(packet.decode('utf'))
+if serialInst.port != "":
+    serialInst.open()
+    packet = serialInst.readLine()
+    print(packet.decode('utf'))
 
-
-    # the following line needs your Twilio Account SID and Auth Token
+# the following line needs your Twilio Account SID and Auth Token
 client = Client("AC337e1f870f1ce671c5a17f77cdec2f94", "4b028e7d594418d5e74192918398281f")
 
 # change the "from_" number to your Twilio number and the "to" number
