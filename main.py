@@ -1,4 +1,5 @@
 # we import the Twilio client from the dependency we just installed
+import time
 
 from twilio.rest import Client
 import json
@@ -52,11 +53,12 @@ serialInst.baudrate = 9600
 serialInst.port = config['DEFAULT']['plants']
 
 serialInst.open()
-serialInst.write(b'test\n')
-packet = serialInst.readline()
-# file = open('garden_info.json', 'rb', buffering = 0)
-str_data = packet.decode(encoding='utf8', errors='str')
-data_dictionary = json.loads(str_data)
-print('hi')
-send_msg(data_dictionary["humidity"], data_dictionary["light"], data_dictionary["temperature"])
+
+while True:
+    time.sleep(15)
+    serialInst.write(b'test\n')
+    packet = serialInst.readline()
+    str_data = packet.decode(encoding='utf8', errors='str')
+    data_dictionary = json.loads(str_data)
+    send_msg(data_dictionary["humidity"], data_dictionary["light"], data_dictionary["temperature"])
 
