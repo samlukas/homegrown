@@ -19,10 +19,10 @@ serialInst.port = ""
 
 #if serialInst.port != "":
     # serialInst.open()
-    # packet = serialInst.readLine()
+# packet = serialInst.readLine()
 file = open('garden_info.json', 'rb', buffering = 0)
 # str_data = file.decode(encoding='utf8', errors='str')
-data_dictionary = json.loads(str_data)
+data_dictionary = json.loads(file.read())
 print(data_dictionary["moisture"])
 
     # the following line needs your Twilio Account SID and Auth Token
