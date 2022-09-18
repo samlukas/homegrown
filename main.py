@@ -2,28 +2,26 @@
 
 from twilio.rest import Client
 import json
-import io
-#import configparser
-#configparser.Config
-
+import configparser
 # set up serial port reader to interpret arduino data
 import serial.tools.list_ports
 
-'''
+config = configparser.ConfigParser()
+config.read('config.ini')
+
 ports = serial.tools.list_ports.comports()
 print(ports)
 serialInst = serial.Serial()
 serialInst.baudrate = 9600
-serialInst.port = ""
-'''
+serialInst.port = config['DEFAULT']['plants']
 
-#if serialInst.port != "":
-    # serialInst.open()
-    # packet = serialInst.readLine()
-file = open('garden_info.json', 'rb', buffering = 0)
-# str_data = file.decode(encoding='utf8', errors='str')
+serialInst.open()
+serialInst.write(b'test\n')
+packet = serialInst.readline()
+# file = open('garden_info.json', 'rb', buffering = 0)
+str_data = packet.decode(encoding='utf8', errors='str')
 data_dictionary = json.loads(str_data)
-print(data_dictionary["moisture"])
+print(data_dictionary["light"])
 
     # the following line needs your Twilio Account SID and Auth Token
 client = Client("AC337e1f870f1ce671c5a17f77cdec2f94", "4b028e7d594418d5e74192918398281f")
@@ -35,13 +33,13 @@ client = Client("AC337e1f870f1ce671c5a17f77cdec2f94", "4b028e7d594418d5e74192918
 # this function will run every 4 hours (the arduino code is timing this)
 def send_watering_msg(moisture):
 
-    text = "Your plant needs watering: the soil is "
+    text = "Your plant needs watering: the moisture level is " + str(moisture) + "%, and the soil is "
 
     # display the appropriate message based on soil moisture
     # note: moisture levels for each need to be changed at the end to reflect sensor data
-    if moisture == 1:
+    if moisture > 50:
         text += "mildly dry."
-    elif moisture == 2:
+    elif moisture > 25:
         text += "moderately dry."
     else:
         text += "very dry."
